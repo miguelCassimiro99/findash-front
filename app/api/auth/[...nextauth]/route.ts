@@ -13,7 +13,7 @@ export const authOptions: AuthOptions = {
 
       async authorize(credentials: any) {
         try {
-          const response = await fetch("http://localhost:3000/login", {
+          const response = await fetch("http://localhost:3000/auth/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -24,18 +24,31 @@ export const authOptions: AuthOptions = {
             }),
           });
 
-          const token = await response.json();
-          if (!token || !response.ok) throw Error("User not found");
+          const user = await response.json();
+          if (!user || !response.ok) throw Error("User not found");
 
-          return token;
+          return user;
         } catch (error) {
           console.log(error);
         }
       },
     }),
   ],
-  session: { strategy: "jwt" },
-  pages: { signIn: "/login" },
+  session: { strategy: "jwt", maxAge: 600 },
+  pages: { signIn: "/" },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      user && (token.user = user);
+      return token;
+    },
+
+    async session({ session, token }) {
+      session = token.user as any;
+
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);
