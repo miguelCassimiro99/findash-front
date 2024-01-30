@@ -24,10 +24,9 @@ export const authOptions: AuthOptions = {
             }),
           });
 
-          const user = await response.json();
-          if (!user || !response.ok) throw Error("User not found");
-
-          return user;
+          const loginData = await response.json();
+          if (!loginData || !response.ok) throw Error("User not found");
+          return loginData;
         } catch (error) {
           console.log(error);
         }
@@ -39,13 +38,12 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      user && (token.user = user);
+      user && (token.user = user as any);
       return token;
     },
 
     async session({ session, token }) {
       session = token.user as any;
-
       return session;
     },
   },
