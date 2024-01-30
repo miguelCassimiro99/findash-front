@@ -1,3 +1,6 @@
+"use client";
+import { useStore } from "../../store/login";
+
 const stepsList = [
   {
     step: 1,
@@ -11,27 +14,29 @@ const stepsList = [
   },
 ];
 
-interface StepsIndicatorProps {
-  current: number;
-}
+export default function StepsIndicator() {
+  const { formIndex } = useStore((store) => store.state);
+  const { setFormIndex } = useStore((store) => store.actions);
 
-export default function StepsIndicator({ current }: StepsIndicatorProps) {
   return (
-    <div className="flex flex-row md:flex-col gap-3">
+    <div className="flex flex-row md:flex-col gap-4">
       {stepsList.map((step) => (
         <div key={step.name} className="flex justify-start items-center gap-3">
           <button
+            onClick={() => setFormIndex(step.step)}
             className={`rounded-full w-10 h-10 md:w-6 md:h-6 border flex justify-center items-center ${
-              current == step.step
+              formIndex == step.step
                 ? "bg-gray-200 text-indigo-600"
                 : "bg-transparent text-gray-200"
             }`}
           >
             <span className="text-sm">{step.step}</span>
           </button>
-          <div className="md:flex flex-col justify-start items-start hidden text-gray-200">
-            <span className="text-sm font-thin">{step.text}</span>
-            <span className="text-lg uppercase">{step.name}</span>
+          <div className="md:flex flex-col justify-start items-start text-gray-200">
+            <span className="text-sm font-thin hidden md:flex">
+              {step.text}
+            </span>
+            <span className="text-base uppercase lg:text-lg">{step.name}</span>
           </div>
         </div>
       ))}

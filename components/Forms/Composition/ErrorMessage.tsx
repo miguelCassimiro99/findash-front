@@ -31,7 +31,7 @@ export default function ErrorMessage({ field }: ErrorMessageProps) {
   if (!fieldError) return null;
 
   return (
-    <span className="mt-1 text-xs text-red-400 absolute bottom-0 left-0 ">
+    <span className="mt-1 text-xs text-[#f9818e] absolute bottom-0 left-0 ">
       {fieldError.message?.toString()}
     </span>
   );
