@@ -1,35 +1,71 @@
 "use client";
 
-import dynamic from "next/dynamic";
-const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  PointElement,
+  LineElement,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 
 interface MixedChartsProps {
   height: number;
   title: string;
-  description?: string;
 }
 
-export default function MixedCharts({ height = 300, title }: MixedChartsProps) {
-  const option = {
-    chart: {
-      id: "apexchart-example",
-    },
-    xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip
+);
+
+const ChartMixed = ({ height = 300, title }: MixedChartsProps) => {
+  const chartData = {
+    labels: [
+      "2023-01",
+      "2023-02",
+      "2023-03",
+      "2023-04",
+      "2023-05",
+      "2023-06",
+      "2023-07",
+    ],
+    datasets: [
+      {
+        data: [100, 120, 115, 134, 168, 132, 200],
+        backgroundColor: "#ffae7e",
+        borderColor: "white",
+      },
+    ],
+  };
+
+  const charOptions = {
+    scales: {
+      x: {
+        ticks: {
+          color: "white",
+        },
+      },
+      y: {
+        ticks: {
+          color: "white",
+        },
+      },
     },
   };
 
-  const series = [
-    {
-      name: "series-1",
-      data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-    },
-  ];
-
   return (
     <div className="bg-card-color rounded-[8px] h-full w-full p-2">
-      <h3 className="text-lg text-gray-200">{title}</h3>
-      <ApexChart type="line" options={option} series={series} height={height} />
+      <h3 className="text-lg font-bold text-gray-200 mb-4">{title}</h3>
+      <div className="h-[250px] w-full">
+        <Line data={chartData} options={charOptions} />
+      </div>
     </div>
   );
-}
+};
+
+export default ChartMixed;
