@@ -7,3 +7,15 @@ export interface ITransaction {
   industry: string;
   state: string;
 }
+
+export type DashboardCardType = {
+  isMonetary: boolean;
+  countValue: number;
+  description: string;
+};
+
+export type DashboardResponseType = {
+  balance: DashboardCardType[];
+  lastTransactions: ITransaction[];
+  totalNumbers: DashboardCardType[];
+};

@@ -1,3 +1,4 @@
+import { ITransaction } from "@/types/transactions";
 import {
   ArrowDownCircleIcon,
   ArrowUpCircleIcon,
@@ -60,7 +61,13 @@ const exampleTable = [
   },
 ];
 
-export default function TransactionsTable() {
+interface TransactionsTableProps {
+  lastTransactions?: ITransaction[];
+}
+
+export default function TransactionsTable({
+  lastTransactions,
+}: TransactionsTableProps) {
   const columns = [
     "Status",
     "Industry",
@@ -71,49 +78,81 @@ export default function TransactionsTable() {
     "Date",
   ];
 
+  function formateDateTime(date: number): string {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+
+    return new Date(date).toLocaleDateString("en-US", options);
+  }
+
+  function formateAmountValue(value: string): number {
+    return parseFloat(value) / 100;
+  }
+
   return (
     <div className="flex-1 h-[400px] flex flex-col items-start justify-start gap-4 rounded-[8px] bg-[#272953] p-2 overflow-x-auto">
       <h3 className="text-lg text-gray-200">Recent transactions</h3>
 
       <div className="relative overflow-auto w-full">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-100">
-          <thead className="text-xs text-gray-400 uppercase bg-gray-50">
-            <tr>
-              {columns.map((col, index) => (
-                <th
-                  key={index}
-                  scope="col"
-                  className="px-1 py-0 md:py-2 md:px-2 font-medium"
-                >
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {exampleTable.map((item, index) => (
-              <tr key={index} className="border-b border-gray-400">
-                <td className="mrr-table-td">
-                  <span className="flex justify-center items-center">
-                    {item.transaction_type === "deposit" && (
-                      <ArrowDownCircleIcon className="w-6 h-6 text-green-700" />
-                    )}
+        {!lastTransactions?.length && (
+          <div role="status" className="max-w-sm animate-pulse">
+            <div className="h-2.5 bg-gray-200 rounded-full  w-48 mb-4"></div>
+            <div className="h-2 bg-gray-200 rounded-full max-w-[360px] mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full max-w-[330px] mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full max-w-[300px] mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full max-w-[360px]"></div>
+            <span className="sr-only">Loading...</span>
+          </div>
+        )}
 
-                    {item.transaction_type === "withdraw" && (
-                      <ArrowUpCircleIcon className="w-6 h-6 text-red-700" />
-                    )}
-                  </span>
-                </td>
-                <td className="mrr-table-td">{item.industry}</td>
-                <td className="mrr-table-td">{item.amount}</td>
-                <td className="mrr-table-td">R$ {item.currency}</td>
-                <td className="mrr-table-td">{item.transaction_type}</td>
-                <td className="mrr-table-td">{item.state}</td>
-                <td className="mrr-table-td">{item.date}</td>
+        {lastTransactions && lastTransactions?.length > 0 && (
+          <table className="w-full text-sm text-left rtl:text-right text-gray-100">
+            <thead className="text-xs text-gray-400 uppercase bg-gray-50">
+              <tr>
+                {columns.map((col, index) => (
+                  <th
+                    key={index}
+                    scope="col"
+                    className="px-1 py-0 md:py-2 md:px-2 font-medium"
+                  >
+                    {col}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {lastTransactions.map((item, index) => (
+                <tr key={index} className="border-b border-gray-400">
+                  <td className="mrr-table-td">
+                    <span className="flex justify-center items-center">
+                      {item.transaction_type === "deposit" && (
+                        <ArrowDownCircleIcon className="w-6 h-6 text-green-700" />
+                      )}
+
+                      {item.transaction_type === "withdraw" && (
+                        <ArrowUpCircleIcon className="w-6 h-6 text-red-700" />
+                      )}
+                    </span>
+                  </td>
+                  <td className="mrr-table-td">{item.industry}</td>
+                  <td className="mrr-table-td">
+                    {formateAmountValue(item.amount)}
+                  </td>
+                  <td className="mrr-table-td">R$ {item.currency}</td>
+                  <td className="mrr-table-td">{item.transaction_type}</td>
+                  <td className="mrr-table-td">{item.state}</td>
+                  <td className="mrr-table-td">{formateDateTime(item.date)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
