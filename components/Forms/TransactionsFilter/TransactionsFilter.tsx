@@ -111,7 +111,7 @@ export default function TransactionsFilter({
     if (!storedQuery) return;
 
     setFilterModalOpen(false);
-    router.push(`${pathname}${storedQuery}`);
+    router.push(`${pathname}?${storedQuery}`);
   }
 
   function resetFilter() {

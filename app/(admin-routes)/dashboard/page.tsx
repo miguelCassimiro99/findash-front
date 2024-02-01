@@ -81,7 +81,7 @@ export default async function Page({ params, searchParams }: PageProps) {
               lastTransactions={dashboardData?.lastTransactions}
             />
 
-            <div className="mrr-graph flex w-full md:w-1/2 h-[400px]">
+            <div className="mrr-graph flex w-full md:w-1/2 h-fit md:h-[400px]">
               <Suspense>
                 {dashboardData?.barChartData && (
                   <BarChart
