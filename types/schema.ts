@@ -28,3 +28,15 @@ export const createAccountSchema = z.object({
 });
 
 export type CreateAccountFormData = z.infer<typeof createAccountSchema>;
+
+export const transactionsFilterSchema = z.object({
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
+  accounts: z.array(z.string()).optional(),
+  industries: z.array(z.string()).optional(),
+  states: z.array(z.string()).optional(),
+});
+
+export type TransactionsFilterFormData = z.infer<
+  typeof transactionsFilterSchema
+>;

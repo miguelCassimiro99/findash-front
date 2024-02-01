@@ -12,8 +12,6 @@ export default async function DashboardLayout({
   return (
     <main className="w-[100vw] min-h-screen overflow-y-auto overflow-x-hidden bg-dashboard-color flex flex-col-reverse md:flex-col p-2 gap-2 relative">
       <Navbar />
-      {/* A row saying Welcome and justify between the filter button - maybe the current hour */}
-
       {children}
     </main>
   );
