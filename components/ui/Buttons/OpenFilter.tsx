@@ -10,7 +10,8 @@ export default function OpenFilter() {
 
   function startFilter() {
     let query = "ammount=5565";
-    query += `&states=['TX', 'NV', 'IL']`;
+    query += `&states=['TX', 'NV']`;
+    query += `&industries=['Hotels', 'Airlines']`;
     router.push(`${pathname}?${query}`);
   }
 

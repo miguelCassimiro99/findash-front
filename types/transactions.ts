@@ -14,8 +14,15 @@ export type DashboardCardType = {
   description: string;
 };
 
+export type DashboardChartType = {
+  labels: string[];
+  datasets: any;
+};
+
 export type DashboardResponseType = {
   balance: DashboardCardType[];
   lastTransactions: ITransaction[];
   totalNumbers: DashboardCardType[];
+  linearChartData: DashboardChartType;
+  barChartData: DashboardChartType;
 };

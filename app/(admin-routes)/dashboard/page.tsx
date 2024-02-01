@@ -10,6 +10,8 @@ import {
   DashboardResponseType,
   ITransaction,
 } from "../../../types/transactions";
+import LinearChart from "@/components/dashboard/LineChart";
+import BarChart from "@/components/dashboard/BarChart";
 
 const lastColumnExample = [
   {
@@ -53,7 +55,7 @@ async function getData(
   params: { [key: string]: string | string[] | undefined } | undefined
 ): Promise<DashboardResponseType | null> {
   try {
-    return await generateDashboardData(data);
+    return await generateDashboardData(data, params);
   } catch (error) {
     console.log("Error getting Dashboard data: ", error);
     return null;
@@ -69,6 +71,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   const data = (await JSON.parse(file)) as ITransaction[];
 
   if (!searchParams) searchParams = undefined;
+  console.log("Search Params", searchParams);
   const dashboardData = await getData(data, searchParams);
 
   return (
@@ -94,9 +97,14 @@ export default async function Page({ params, searchParams }: PageProps) {
             ))}
           </div>
           <div className="mrr-graph flex w-full h-[316px]">
-            <Suspense>
-              <ChartMixed height={250} title="Transactions" />
-            </Suspense>
+            {dashboardData?.linearChartData && (
+              <Suspense>
+                <LinearChart
+                  title="Transactions"
+                  chartData={dashboardData.linearChartData}
+                />
+              </Suspense>
+            )}
           </div>
         </div>
 
@@ -107,7 +115,12 @@ export default async function Page({ params, searchParams }: PageProps) {
 
           <div className="mrr-graph flex w-full md:w-1/2 h-[400px]">
             <Suspense>
-              <ChartMixed height={300} title="Deposits" />
+              {dashboardData?.barChartData && (
+                <BarChart
+                  chartData={dashboardData.barChartData}
+                  title="Deposits"
+                />
+              )}
             </Suspense>
           </div>
         </div>

@@ -38,6 +38,10 @@ function filterTransactions(
     );
   });
 
+  filteredTransactions.sort((a, b) => a.date - b.date);
+
+  console.log("Filtered: ", filteredTransactions.length);
+
   return filteredTransactions;
 }
 
@@ -58,11 +62,15 @@ export const generateDashboardData = async (
     const balance = calculateBalance(filteredTransactions);
     const lastTransactions = getLastTransactions(filteredTransactions);
     const totalNumbers = calculateTotalNumbers(filteredTransactions);
+    const linearChartData = generateLinearChart(filteredTransactions);
+    const barChartData = generateBarChart(filteredTransactions);
 
     return {
       balance,
       lastTransactions,
       totalNumbers,
+      linearChartData,
+      barChartData,
     };
   } catch (error) {
     console.log("Error: ", error);
@@ -156,4 +164,58 @@ function calculateTotalNumbers(
       description: "States",
     },
   ];
+}
+
+function generateLinearChart(transactions: ITransaction[]) {
+  console.log("Linear: ", transactions.length);
+
+  const labels: string[] = [];
+  const amounts: number[] = [];
+
+  transactions.sort((a, b) => a.date - b.date);
+
+  transactions.forEach((item) => {
+    const date = new Date(item.date).toLocaleDateString();
+    labels.push(date);
+    amounts.push(parseFloat(item.amount) / 100);
+  });
+
+  return {
+    labels,
+    datasets: [
+      {
+        label: "Transactions Value",
+        data: amounts,
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
+  };
+}
+
+function generateBarChart(transactions: ITransaction[]) {
+  const data: any = {};
+
+  transactions.forEach((item) => {
+    const industry = item.industry;
+    if (data[industry]) return data[industry]++;
+    data[industry] = 1;
+  });
+
+  const labels = Object.keys(data);
+  const values = Object.values(data);
+
+  return {
+    labels,
+    datasets: [
+      {
+        label: "Transactions count by Industry",
+        data: values,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
 }
