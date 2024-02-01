@@ -26,3 +26,11 @@ export type DashboardResponseType = {
   linearChartData: DashboardChartType;
   barChartData: DashboardChartType;
 };
+
+export type FilterTransactionsType = {
+  startDate?: Date;
+  endDate?: Date;
+  accounts?: string[];
+  industries?: string[];
+  states?: string[];
+};

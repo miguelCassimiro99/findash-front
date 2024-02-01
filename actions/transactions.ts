@@ -3,20 +3,13 @@
 import {
   DashboardCardType,
   DashboardResponseType,
+  FilterTransactionsType,
   ITransaction,
 } from "../types/transactions";
 
-type FilterType = {
-  startDate?: Date;
-  endDate?: Date;
-  accounts?: string[];
-  industries?: string[];
-  states?: string[];
-};
-
 function filterTransactions(
   transactionsList: ITransaction[],
-  params: FilterType
+  params: FilterTransactionsType
 ): ITransaction[] {
   const {
     startDate = 0,
@@ -40,8 +33,6 @@ function filterTransactions(
 
   filteredTransactions.sort((a, b) => a.date - b.date);
 
-  console.log("Filtered: ", filteredTransactions.length);
-
   return filteredTransactions;
 }
 
@@ -53,7 +44,7 @@ export const generateDashboardData = async (
   //? To many data
 
   transactionsList: ITransaction[],
-  params?: FilterType
+  params?: FilterTransactionsType
 ): Promise<DashboardResponseType | null> => {
   try {
     if (!params) params = {};
@@ -167,8 +158,6 @@ function calculateTotalNumbers(
 }
 
 function generateLinearChart(transactions: ITransaction[]) {
-  console.log("Linear: ", transactions.length);
-
   const labels: string[] = [];
   const amounts: number[] = [];
 
