@@ -9,7 +9,9 @@ import {
 
 function filterTransactions(
   transactionsList: ITransaction[],
-  params: FilterTransactionsType
+  params: FilterTransactionsType,
+  firsDate: Date,
+  lastDate: Date
 ): ITransaction[] {
   const {
     startDate = 0,
@@ -19,12 +21,27 @@ function filterTransactions(
     states = [],
   } = params || {};
 
+  let startDateTime = firsDate.getTime();
+  let endDateTime = lastDate.getTime();
+
+  if (params.startDate) {
+    const dateObj = new Date(params.startDate);
+    dateObj.setHours(0, 0, 0, 0);
+    startDateTime = dateObj.getTime();
+  }
+
+  if (params.endDate) {
+    const dateObj = new Date(params.endDate);
+    dateObj.setHours(23, 59, 59, 999);
+    endDateTime = dateObj.getTime();
+  }
+
   const filteredTransactions = transactionsList.filter((transaction) => {
-    const transactionDate = new Date(transaction.date * 1000);
+    const transactionDate = new Date(transaction.date);
 
     return (
-      transactionDate >= startDate &&
-      transactionDate <= endDate &&
+      transaction.date >= startDateTime &&
+      transaction.date <= endDateTime &&
       (accounts.length === 0 || accounts.includes(transaction.account)) &&
       (industries.length === 0 || industries.includes(transaction.industry)) &&
       (states.length === 0 || states.includes(transaction.state))
@@ -48,7 +65,13 @@ export const generateDashboardData = async (
 ): Promise<DashboardResponseType | null> => {
   try {
     if (!params) params = {};
-    const filteredTransactions = filterTransactions(transactionsList, params);
+    const transactionsFilters = getFilters(transactionsList);
+    const filteredTransactions = filterTransactions(
+      transactionsList,
+      params,
+      transactionsFilters.firstDate,
+      transactionsFilters.lastDate
+    );
 
     const balance = calculateBalance(filteredTransactions);
     const lastTransactions = getLastTransactions(filteredTransactions);
@@ -62,6 +85,7 @@ export const generateDashboardData = async (
       totalNumbers,
       linearChartData,
       barChartData,
+      transactionsFilters,
     };
   } catch (error) {
     console.log("Error: ", error);
@@ -206,5 +230,30 @@ function generateBarChart(transactions: ITransaction[]) {
         borderWidth: 1,
       },
     ],
+  };
+}
+
+function getFilters(transactions: ITransaction[]) {
+  const accounts: Set<string> = new Set();
+  const industries: Set<string> = new Set();
+  const states: Set<string> = new Set();
+
+  transactions.sort((a, b) => a.date - b.date);
+
+  const firstDate = new Date(transactions[0].date);
+  const lastDate = new Date(transactions[transactions.length - 1].date);
+
+  transactions.forEach((item) => {
+    accounts.add(item.account);
+    industries.add(item.industry);
+    states.add(item.state);
+  });
+
+  return {
+    accounts: Array.from(accounts),
+    industries: Array.from(industries),
+    states: Array.from(states),
+    firstDate,
+    lastDate,
   };
 }

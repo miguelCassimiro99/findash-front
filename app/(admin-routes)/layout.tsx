@@ -13,13 +13,5 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   if (!session) redirect("/");
 
-  return (
-    <>
-      {children}
-
-      <Suspense>
-        <TransactionsFilters />
-      </Suspense>
-    </>
-  );
+  return <>{children}</>;
 }

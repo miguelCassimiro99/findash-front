@@ -19,12 +19,21 @@ export type DashboardChartType = {
   datasets: any;
 };
 
+export type TransactionsFiltersList = {
+  accounts: string[];
+  industries: string[];
+  states: string[];
+  firstDate: Date;
+  lastDate: Date;
+};
+
 export type DashboardResponseType = {
   balance: DashboardCardType[];
   lastTransactions: ITransaction[];
   totalNumbers: DashboardCardType[];
   linearChartData: DashboardChartType;
   barChartData: DashboardChartType;
+  transactionsFilters: TransactionsFiltersList;
 };
 
 export type FilterTransactionsType = {
