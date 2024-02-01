@@ -15,6 +15,14 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      colors: {
+        primary: "#473dff", //blue
+        "primary-light": "#6158ff",
+        secondary: "#ffae7e", //orange
+        danger: "#f8808e", //red
+        "card-color": "#272953",
+        "dashboard-color": "#17113b",
+      },
     },
   },
   plugins: [],

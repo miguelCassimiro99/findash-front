@@ -1,6 +1,6 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import Navbar from "../../../components/ui/Navbar";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function DashboardLayout({
   children,
@@ -10,10 +10,11 @@ export default async function DashboardLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <section className="">
+    <main className="w-[100vw] min-h-screen overflow-y-auto overflow-x-hidden bg-dashboard-color flex flex-col-reverse md:flex-col p-2 gap-2 relative">
       <Navbar />
-      <span>Bem vindo {session?.user?.name}</span>
+      {/* A row saying Welcome and justify between the filter button - maybe the current hour */}
+
       {children}
-    </section>
+    </main>
   );
 }
